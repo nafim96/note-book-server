@@ -2,16 +2,16 @@ const User = require( "../models/Users" );
 const { validationResult } = require( 'express-validator' );
 const bcrypt = require( 'bcryptjs' );
 const jwt = require( 'jsonwebtoken' );
-// require( "dotenv" ).config( { path: "../../.env" } );
-const JWT_SECRETE = "helloAnu";
+require( "dotenv" ).config( { path: "../../.env" } );
+// const JWT_SECRETE = "helloAnu";
 
 // Route 1: Get LoggedIn user Details using: POST "api/auth/getUser"
 const getAuthController = async ( req, res ) =>
 {
     try
     {
-        userId = req.user.id;
-        let user = await User.findById( userId ).select( "-password" );
+        const userId = req.user.id;
+        const user = await User.findById( userId ).select( "-password" );
         res.send( user );
     } catch ( error )
     {
@@ -49,7 +49,7 @@ const createAuthController = async ( req, res ) =>
                 id: user.id
             }
         };
-        const userToken = jwt.sign( { data }, JWT_SECRETE );
+        const userToken = jwt.sign( { data }, `${ process.env.JWT_SECRETE }` );
         res.json( { userToken } );
 
     } catch ( err )
@@ -60,7 +60,6 @@ const createAuthController = async ( req, res ) =>
 };
 
 //Route 3: user Auth login systems using: POST end point : api/auth/login
-
 const loggedInUserController = async ( req, res ) =>
 {
     const errors = validationResult( req );
@@ -88,7 +87,7 @@ const loggedInUserController = async ( req, res ) =>
             }
         };
 
-        const userToken = jwt.sign( { data }, JWT_SECRETE );
+        const userToken = jwt.sign( { data }, `${ process.env.JWT_SECRETE }` );
         res.json( { userToken } );
     } catch ( err )
     {

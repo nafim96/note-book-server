@@ -1,12 +1,9 @@
 const jwt = require( "jsonwebtoken" );
-// require( "dotenv" ).config( { path: "../../.env" } );
-const JWT_SECRETE = "helloAnu";
-// const User = require( "../models/Users" );
+require( "dotenv" ).config( { path: "../../.env" } );
 
 const fetchUser = async ( req, res, next ) =>
 {
     // get the user from the jwt token  and add id  to req object
-    // const headers = await res.setHeader( 'Content-Type', 'application/json' );
     const token = await req.header( "User-Token" );
 
     if ( !token )
@@ -15,7 +12,7 @@ const fetchUser = async ( req, res, next ) =>
     }
     try
     {
-        const data = jwt.verify( token, JWT_SECRETE );
+        const data = jwt.verify( token, `${ process.env.JWT_SECRETE }` );
         req.user = data.data.user;
         next();
     } catch ( error )
