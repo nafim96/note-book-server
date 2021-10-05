@@ -18,7 +18,11 @@ const createNoteController = ( req, res ) =>
         tag: req.body.tag,
         date: new Date()
     };
-    res.json( note );
+    res.status( 201 ).json( {
+        message: "create successfully",
+        note
+    } );
+    console.log( "hello programmer" );
     // return note.save().then( result =>
     // {
     //     res.status( 201 ).json( {
