@@ -16,13 +16,8 @@ const authRouter = require( "./src/routers/auth" );
 
 
 //All Routers available Here
-app.use( "/api/notes", noteRouter );
+app.use( "/api/note", noteRouter );
 app.use( "/api/auth", authRouter );
-
-app.get( "/", ( req, res ) =>
-{
-    res.send( "Hello World" );
-} );
 
 
 app.listen( port, () =>
