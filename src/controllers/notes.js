@@ -7,7 +7,7 @@ const getNoteController = async ( req, res ) =>
     try
     {
         const note = await Note.find( { user: req.user.id } );
-        res.send( note );
+        res.send( { note } );
     } catch ( error )
     {
         console.log( error.message );
