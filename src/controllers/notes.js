@@ -53,7 +53,7 @@ const updateNoteController = async ( req, res ) =>
         }
         note = await Note.findByIdAndUpdate( req.params.id, { $set: newNote }, { new: true } );
 
-        res.send( note );
+        res.send( { note } );
     } catch ( error )
     {
         console.log( error.message );
