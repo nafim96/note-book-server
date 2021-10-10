@@ -23,17 +23,19 @@ const getAuthController = async ( req, res ) =>
 //Route 2: create New user using:POST: "/api/auth/create"
 const createAuthController = async ( req, res ) =>
 {
+    let success = false;
     const errors = validationResult( req );
     if ( !errors.isEmpty() )
     {
-        return res.status( 400 ).json( { errors: errors.array() } );
+        return res.status( 400 ).json( { success, errors: errors.array() } );
     }
     try
     {
         let user = await User.findOne( { email: req.body.email } );
+        success = false;
         if ( user )
         {
-            return res.status( 400 ).json( { errors: "user already exist" } );
+            return res.status( 400 ).json( { success, errors: "user already exist" } );
         }
         //new user create and store
         const salt = await bcrypt.genSalt( 12 );
@@ -50,7 +52,8 @@ const createAuthController = async ( req, res ) =>
             }
         };
         const userToken = jwt.sign( { data }, `${ process.env.JWT_SECRETE }` );
-        res.json( { userToken } );
+        success = true;
+        res.json( { success, userToken } );
 
     } catch ( err )
     {
@@ -62,10 +65,12 @@ const createAuthController = async ( req, res ) =>
 //Route 3: user Auth login systems using: POST end point : api/auth/login
 const loggedInUserController = async ( req, res ) =>
 {
+    let success = false;
     const errors = validationResult( req );
     if ( !errors.isEmpty() )
     {
-        return res.status( 400 ).json( { errors: errors.array() } );
+        success = false;
+        return res.status( 400 ).json( { success, errors: errors.array() } );
     }
     try
     {
@@ -73,12 +78,14 @@ const loggedInUserController = async ( req, res ) =>
         let user = await User.findOne( { email } );
         if ( !user )
         {
-            return res.status( 400 ).json( { Error: "please use correct credential" } );
+            success = false;
+            return res.status( 400 ).json( { success, Error: "please use correct credential" } );
         }
         const passwordCompare = await bcrypt.compare( password, user.password );
         if ( !passwordCompare )
         {
-            return res.status( 400 ).json( { Error: "please use correct credential" } );
+            success = false;
+            return res.status( 400 ).json( { success, Error: "please use correct credential" } );
         }
 
         const data = {
@@ -88,7 +95,8 @@ const loggedInUserController = async ( req, res ) =>
         };
 
         const userToken = jwt.sign( { data }, `${ process.env.JWT_SECRETE }` );
-        res.json( { userToken } );
+        success = true;
+        res.json( { success, userToken } );
     } catch ( err )
     {
         res.status( 500 ).send( "Internal Server Error" );
